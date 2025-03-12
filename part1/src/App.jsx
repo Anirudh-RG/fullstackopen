@@ -7,6 +7,7 @@ const App = () => {
   const [anec,setAnec] = useState("");
   const [votes,setVotesArr] = useState(new Array(8).fill(0));
   // save clicks of each button to its own state
+  const [mostVotedAnec,setMostVotedAnec] = useState("");
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
@@ -32,18 +33,27 @@ const App = () => {
         prevVotes =>{
           const newVotes = [...prevVotes];
           newVotes[idx]+=1;
+          const maxVotes = Math.max(...newVotes);
+          const maxIdx = newVotes.findIndex(vote => vote === maxVotes);
+          setMostVotedAnec(anecdotes[maxIdx]);
           return newVotes;
-        }
-      );
+        });
     }
+  }
 
+  const checkVotesNotNull = (votes) =>{
+    for(let i = 0;i<votes.length;i++){
+      if(votes[i] > 0)return true;
+    }
+    return false;
   }
     
   return (
     <div>
+      {console.log(votes)}
       <h1> Display a random anecdote</h1>
       <button onClick={handleAnecdoteClick}>Get an anecdote</button>
-      {console.log(anec)}
+      
       <p>
         {anec}
       </p>
@@ -57,6 +67,13 @@ const App = () => {
       <p>No anecdote selected</p>
 }
       <button onClick={handleVoting}>Vote</button>
+      <h2>Anecdote with mostvotes</h2>
+      {
+        checkVotesNotNull(votes) === true ?
+        <p>{mostVotedAnec}</p>
+        :
+        <p>No Votes registered yet</p>
+      }
       <h1>Give feedback</h1>
       <Button text="good" onClick={handleGoodClick}/>
       <Button text="neutral" onClick={handleNeutralClick}/>
