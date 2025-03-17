@@ -2,19 +2,21 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    {
-      id: 1, 
-      name: 'Arto Hellas',
-      phone: '82172-12923' 
-    }
-  ]) 
+    { name: 'Arto Hellas', phone: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', phone: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', phone: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', phone: '39-23-6423122', id: 4 }
+  ])
   const [input,setInput] = useState('')
   const [num,setNumber] = useState('')
+  const [phoneBook,setPhoneBook] = useState(persons);
+  const [query,setQuery] = useState('');
 
   const handleInputChange = (e) =>{
     const {name,value} = e.target;
     if(name === 'text-input') setInput(value);
     else if(name ==='num-input') setNumber(value);
+    else if(name === 'query-input') setQuery(value);
   }
   const nameExists = () =>{
     if(input === '') return true;
@@ -44,14 +46,23 @@ const App = () => {
       else alert(`${input} already exists`);
     }
   }
+  const handleSearchClick = () =>{
+    if(query === '') setPhoneBook(persons);
+    const filterBySearch = persons.filter((item)=>{
+      return item.name.toLowerCase().includes(query.toLowerCase()) || item.phone.includes(query);
+    })
+    setPhoneBook(filterBySearch);
+  }
 
   return (
     <div>
       <h2>Phonebook</h2>
       <div>
         <h2>serach</h2>
-        {/* <input type='name'  */}
+        <input type='text' name='query-input' onChange={handleInputChange} value={query}/>
+        <button onClick={handleSearchClick}>Search</button>
       </div>
+      <h2> Add a new address </h2>
       <form onSubmit={handleInputSubmit}>
         <div>
           name: <input type='text' onChange={handleInputChange} name='text-input' value={input}></input>
@@ -63,7 +74,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       {
-        persons.map((person)=>{
+        phoneBook.map((person)=>{
           return(
             <p key={person.id}>{person.name} {" "} {person.phone}</p>
           )
