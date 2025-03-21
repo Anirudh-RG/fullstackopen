@@ -1,12 +1,7 @@
-import { useState } from 'react'
-
+import { useEffect, useState } from 'react'
+import axios from "axios"
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', phone: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', phone: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', phone: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', phone: '39-23-6423122', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
   const [input,setInput] = useState('')
   const [num,setNumber] = useState('')
   const [phoneBook,setPhoneBook] = useState(persons);
@@ -53,6 +48,15 @@ const App = () => {
     })
     setPhoneBook(filterBySearch);
   }
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/phonebook")
+      .then(res => {
+        setPersons(res.data);
+        setPhoneBook(res.data);
+      })
+      .finally(() => console.log("Data fetched"));
+  }, []); 
 
   return (
     <div>
